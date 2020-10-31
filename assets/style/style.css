@@ -14,6 +14,7 @@ body{
 }
 .nav-items{
     margin-left: 32px;
+    width: 100%;
 }
 .nav-link{
     padding: 14px 16px 8px 16px;
@@ -31,7 +32,11 @@ body{
     margin: 128px 0px 8px 0px;
     text-align: center;
 }
-hr {
+.header-hr {
     margin: auto;
     width: 20%;
+}
+
+.float_right {
+    float: right;
 }
