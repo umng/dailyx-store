@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
+    <title>QR Code Scanner</title>
+    <style>
+        .display-none {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main-screen">
+        <button class="btn_start-scan" onclick="startScan()">Start Scan</button>
+
+        <h3>Scan Results</h3>
+        <ol reversed id="qr-reader-results"></ol>
+    </div>
+    <div class="scan-screen display-none">
+        <button onclick="stopScan()">Stop Scan</button>
+        <div id="qr-reader" style="width:500px"></div>
+    </div>
+
+    <script>
+        const html5QrCode = new Html5Qrcode("qr-reader");
+        const qrCodeSuccessCallback = message => {
+            document.querySelector("#qr-reader-results").innerHTML
+                = "<li>" + message + "</li>" + document.querySelector("#qr-reader-results").innerHTML;
+            stopScan();
+        }
+        const config = { fps: 10, qrbox: 250 };
+
+
+        function startScan() {
+            document.querySelector(".btn_start-scan").classList.add('display-none');
+            document.querySelector(".scan-screen").classList.remove('display-none');
+            html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback);
+        }
+        function stopScan() {
+            html5QrCode.stop().then(ignore => {
+                document.querySelector(".btn_start-scan").classList.remove('display-none');
+                document.querySelector(".scan-screen").classList.add('display-none');
+            }).catch(err => {
+                alert(err);
+            });
+        }
+    </script>
+</body>
+
+</html>
