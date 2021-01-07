@@ -16,13 +16,15 @@
 <body>
     <div class="main-screen">
         <button class="btn_start-scan" onclick="startScan()">Start Scan</button>
-
-        <h3>Scan Results</h3>
-        <ol reversed id="qr-reader-results"></ol>
+        <input type="file" id="qr-input-file" accept="image/*" capture>
     </div>
     <div class="scan-screen display-none">
         <button onclick="stopScan()">Stop Scan</button>
-        <div id="qr-reader" style="width:500px"></div>
+        <div id="qr-reader" style="width: 80%; max-width:500px"></div>
+    </div>
+    <div class="results">
+        <h3>Scan Results</h3>
+        <ol reversed id="qr-reader-results"></ol>
     </div>
 
     <script>
@@ -32,22 +34,41 @@
                 = "<li>" + message + "</li>" + document.querySelector("#qr-reader-results").innerHTML;
             stopScan();
         }
-        const config = { fps: 10, qrbox: 250 };
+        const config = { fps: 5, qrbox: 250 };
 
 
         function startScan() {
-            document.querySelector(".btn_start-scan").classList.add('display-none');
+            document.querySelector(".main-screen").classList.add('display-none');
             document.querySelector(".scan-screen").classList.remove('display-none');
             html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback);
         }
         function stopScan() {
             html5QrCode.stop().then(ignore => {
-                document.querySelector(".btn_start-scan").classList.remove('display-none');
+                document.querySelector(".main-screen").classList.remove('display-none');
                 document.querySelector(".scan-screen").classList.add('display-none');
             }).catch(err => {
                 alert(err);
             });
         }
+
+        // File based scanning
+        const fileinput = document.getElementById('qr-input-file');
+        fileinput.addEventListener('change', e => {
+            if (e.target.files.length == 0) {
+                return;
+            }
+
+            const imageFile = e.target.files[0];
+            html5QrCode.scanFile(imageFile, true)
+                .then(qrCodeMessage => {
+                    document.querySelector("#qr-reader-results").innerHTML
+                        = "<li>" + qrCodeMessage + "</li>" + document.querySelector("#qr-reader-results").innerHTML;
+                })
+                .catch(err => {
+                    console.log(`Error scanning file. Reason: ${err}`)
+                });
+        });
+
     </script>
 </body>
 
