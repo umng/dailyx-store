@@ -65,7 +65,7 @@
                         = "<li>" + qrCodeMessage + "</li>" + document.querySelector("#qr-reader-results").innerHTML;
                 })
                 .catch(err => {
-                    console.log(`Error scanning file. Reason: ${err}`)
+                    alert(`Error scanning file. Reason: ${err}`)
                 });
         });
 
