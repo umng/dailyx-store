@@ -1,33 +1,107 @@
 <html>
-    <head>
-        <title>Contact Us</title>
-    </head>
-    <body>
-        <div style="background-color: #2a9dd6;font-size: 40px;">
-            <center><h1 style="background-color: #6b6a85;color: white;"><img src="./favicon.png" alt="" width="50px"><marquee>DailyX Store</marquee></h1></center> 
-             <div style="padding-left: 450px;padding-right: 450px;">
-             <div style="background-color: #5f4242;width: 1000px;border-style: hidden;border-top-left-radius: 40px;border-bottom-right-radius: 40px;padding-left: 20px;">
-             <h2 style="font-size: 50px;color: white;">Contact Us</h2>
-             </div>
-             </div>
-             </div>
-             <div style="padding-left: 450px;padding-right: 450px;">
-             <div style="background-color:rgb(97, 21, 21);font-size: 30px;color: white;padding-bottom: 5px;padding-top: 5px;padding-left: 5px;">
-                <p>1.Idar</p>
-             </div>
-             <div style="background-color:rgb(233, 233, 233);font-size: 30px;color: rgb(97, 21, 21);border-style: double;padding-left: 5px;padding-right: 5px;">
-             <p>Adress:-Opposite Balaji Complex, Below Railway Gate, GIDC Idar, Sabarkantha, 383430</p>
-             <p>Mo:xxxxxxxxxx</p>
-             <p>Email:idar.helpdailyx@gmail.com</p>
-             </div>
-             <div style="background-color:rgb(97, 21, 21);font-size: 30px;color: white;padding-bottom: 5px;padding-top: 5px;padding-left: 5px;">
-                 <p>2.Himatnagar</p>
-             </div>
-             <div style="background-color:rgb(233, 233, 233);font-size: 30px;color: rgb(97, 21, 21);border-style: double;padding-left: 5px;padding-right: 5px;">
-             <p>Adress:Himmatnagar-Prantij Highway, Behind Star City, GIDC Himmatnagar,383001</p>
-             <p>Mo-xxxxxxxxxx</p>
-             <p>Email:hmthelpdailyx@gmail.com</p>
-             </div>
-             </div>
-    </body>
+
+<head>
+    <title>Contact Us | DailyX Store</title>
+    <link rel="icon" href="assets/images/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="assets/style/style.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        input[type=text],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            margin-top: 6px;
+            margin-bottom: 16px;
+            resize: vertical;
+        }
+
+        input[type=submit] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            cursor: pointer;
+        }
+
+        input[type=submit]:hover {
+            background-color: #45a049;
+        }
+
+        /* Style the container/contact section */
+        .container {
+            border-radius: 5px;
+            padding: 10px;
+        }
+
+        /* Create two columns that float next to eachother */
+        .column {
+            float: left;
+            width: 50%;
+            margin-top: 6px;
+            padding: 20px;
+        }
+
+        /* Clear floats after the columns */
+        .row {
+            content: "";
+            display: table;
+            clear: both;
+            display: flex;
+        }
+
+        /* Responsive layout - when the screen is less than 600px wide, make the two columns stack on top of each other instead of next to each other */
+        @media screen and (max-width: 600px) {
+
+            .column,
+            input[type=submit] {
+                width: 100%;
+                margin-top: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="nav-bar">
+        <img class="logo" src="assets/images/logo.png" />
+        <div class="nav-items">
+            <a class="nav-link" href="index.html">Home</a>
+            <a class="nav-link" href="About us.html">About Us</a>
+            <a class="nav-link nav-link-selected" href="contact-us.html">Contact Us</a>
+            <a class="nav-link float_right" href="privacy-policy.html">Privacy Policy</a>
+        </div>
+    </div>
+    <div class="container">
+        <div style="text-align:center">
+            <h2>Contact Us</h2>
+            <p>Swing by for a cup of coffee, or leave us a message:</p>
+        </div>
+        <div class="row">
+            <div class="column">
+                <img src="https://www.w3schools.com/w3images/map.jpg" style="width:100%">
+            </div>
+            <div class="column">
+                <form>
+                    <label for="fname">First Name</label>
+                    <input type="text" id="fname" name="firstname" placeholder="Your name..">
+                    <label for="lname">Last Name</label>
+                    <input type="text" id="lname" name="lastname" placeholder="Your last name..">
+                    <label for="country">Country</label>
+                    <select id="country" name="country">
+                        <option value="australia">Australia</option>
+                        <option value="canada">Canada</option>
+                        <option value="usa">USA</option>
+                    </select>
+                    <label for="subject">Subject</label>
+                    <textarea id="subject" name="subject" placeholder="Write something.."
+                        style="height:170px"></textarea>
+                    <input type="submit" value="Submit">
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+
 </html>
