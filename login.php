@@ -1,210 +1,246 @@
 <?php
-  session_start();
-  include './db_connection.php';
-  $insert = false;
-  $role=$_SESSION['role'];
-  if($role){
+                    include './db_connection.php';
+                    // session_start();
+                    $insert = false;
+                    
+                    if(isset($_POST['submit'])){
+                        session_start();
+                        $con=OpenCon();
+                        if(!$con){
+                            die("not connect to database" . mysqli_connect_error());
+                        }
+                        $_SESSION['role']=$_POST['role'];
+                        $_SESSION['username'] =$_POST['email'];
+                        $_SESSION['password'] =$_POST['password'];
+                        $role=$_SESSION['role'];
+                        $username=$_SESSION['username'];
+                        $password=$_SESSION['password'];
+                        $sql= "SELECT * FROM login_cred WHERE role = '$role' AND username = '$username' AND password = '$password';";
+                        $result = mysqli_query($con,$sql);
+                        $dbrole=0;
+                        $row=mysqli_num_rows($result);
+                        if($row>0){
+                            while($rows=mysqli_fetch_array($result)){
+                                $dbrole=$rows['role'];
+                            }
+                        }
+                        if($dbrole){
+                        if($result and $dbrole=='HEI'){
+                            header("Location: ./index.php");
+                        }
+                        else if($result and $dbrole=='Faculty'){
+                            header("Location: ./Faculty_dashboard.php");
+                            $sql1= "SELECT * FROM faculty WHERE email = '$username';";
+                            $result1 = mysqli_query($con,$sql1);
+                            $row1=mysqli_num_rows($result1);
+                            if($row1>0){
+                                while($rows1=mysqli_fetch_array($result1)){
+                                    $_SESSION['course_id']=$rows1['course_id'];
+                                    $_SESSION['faculty_id']=$rows1['faculty_id'];
+                                    $_SESSION['faculty_name']=$rows1['faculty_name'];
+                                }
+                            }
+                        }
+                        else if($result and $dbrole=='Student'){
+                          header("Location: ./Student_dashboard.php");
+                          $sql2= "SELECT * FROM student WHERE email = '$username';";
+                          $result2 = mysqli_query($con,$sql2);
+                          $row2=mysqli_num_rows($result2);
+                          if($row2>0){
+                              while($rows2=mysqli_fetch_array($result2)){
+                                  $_SESSION['course_id']=$rows2['course_id'];
+                                  $_SESSION['student_id']=$rows2['student_id'];
+                                  $_SESSION['student_name']=$rows2['student_name'];
+                                  $_SESSION['batch']=$rows2['batch'];
+                                  $_SESSION['semester']=$rows2['semester'];
+                              }
+                          }
+                        }else{
+                          header("Location: ./admin.html");
+                        }
+                        
+                        // function SetSessionFaculty(){
+                        //   $username1=$_POST['email'];
+                        //   $college_id=$_SESSION['college_id'];
+                        //   $sql1= "SELECT * FROM technvxg_pratikriya_vishleshan.faculty WHERE email = '$username' AND college_id = '$college_id';";
+                        //     $result1 = mysqli_query($con,$sql1);
+                        //     $row1=mysqli_num_rows($result1);
+                        //     if($row1>0){
+                        //         while($rows1=mysqli_fetch_array($result1)){
+                        //             $_SESSION['course_id']=$rows1['course_id'];
+                        //             $_SESSION['faculty_id']=$rows1['faculty_id'];
+                        //             $_SESSION['faculty_name']=$rows1['faculty_name'];
+                        //         }
+                        //     }
+                        // }
+                        
+
+                        $con->close();
+                    }else{
+                        echo "Please Check Your Credentials ";
+                    }
+                        
+                    }
 ?>
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Pratikriiya Vishleshan</title>
-  <meta name="description" content="">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="robots" content="all,follow">
-  <!-- Google fonts - Roboto -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
-  <!-- Choices CSS-->
-  <link rel="stylesheet" href="vendor/choices.js/public/assets/styles/choices.min.css">
-  <!-- Custom Scrollbar-->
-  <link rel="stylesheet" href="vendor/overlayscrollbars/css/OverlayScrollbars.min.css">
-  <!-- theme stylesheet-->
-  <link rel="stylesheet" href="css/style.default.css" id="theme-stylesheet">
-  <!-- Custom stylesheet - for your changes-->
-  <link rel="stylesheet" href="css/custom.css">
-  <!-- Favicon-->
-  <link rel="shortcut icon" href="img/All_India_Council_for_Technical_Education_logo-removebg-preview.png">
-  <!-- Tweaks for older IEs-->
-  <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script><![endif]-->
+  <title>Pratikriya Vishleshan | Login</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <link rel="icon" type="image/x-icon" href="./img/All_India_Council_for_Technical_Education_logo-removebg-preview.png" />
+  <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    .mainflex {
+      display: flex;
+      justify-content: space-around;
+      height: 100vh;
+      background: #52be73;
+    }
+
+    .mainflex-1 {
+      padding-top: 5%;
+      flex: 40%;
+      display: flex;
+      flex-direction: column;
+      text-align: center;
+      gap: 10px;
+      font-size: 18px;
+    }
+
+    .mainflex-2 {
+      padding-top: 13%;
+      flex: 60%;
+      height: 100%;
+      background-color: #faf6e5;
+      border-radius: 200px 0px 0px 1000px;
+    }
+
+    .heading {
+      font-size: 3rem;
+      color: azure;
+    }
+
+    .loginHeading {
+      color: #0d4f8b;
+    }
+
+    .smallHeading {
+      font-size: 1.75rem;
+      color: azure;
+      padding-top: 10px;
+    }
+
+    .formContainer {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+
+      align-items: center;
+      gap: 10px;
+    }
+
+    .login-flex {
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      padding: 12px 20px;
+      width: 30vw;
+    }
+
+    .button {
+      font-size: 16px;
+      margin-top: 10px;
+      padding: 1vw 5vw;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      box-shadow: 0px 0px 10px 0px #f9d78f;
+    }
+
+    .button:hover {
+      /* box-shadow: 2px 2px 2px 1px; */
+      /**rgb(0, 198, 255, 0.5);**/
+      box-shadow: 0px 0px 26px 0px #f9d78f;
+    }
+
+    .formContainer div select,
+    .forgotPassword {
+      cursor: pointer;
+    }
+
+    img {
+      height: 150px;
+    }
+
+    @media only screen and (max-width: 800px) {
+      .mainflex {
+        flex-direction: column;
+        width: 100%;
+        gap: 20px;
+      }
+
+      .mainflex-1 {
+        margin-top: 50px;
+        width: 100%;
+        padding: 10px;
+      }
+
+      .mainflex-2 {
+        border-radius: 20px 20px 0px 0px;
+        width: 100%;
+      }
+
+      .login-flex {
+        width: 80%;
+      }
+
+      .button {
+        width: 50%;
+        height: 40px;
+      }
+    }
+  </style>
 </head>
 
 <body>
-  <!-- Side Navbar -->
-  <nav class="side-navbar">
-    <!-- Sidebar Header    -->
-    <div class="sidebar-header d-flex align-items-center justify-content-center p-3 mb-3">
-      <!-- User Info-->
-      <div class="sidenav-header-inner text-center"><img class="img-fluid rounded-circle avatar mb-3"
-          src="./download-removebg-preview.png" alt="person">
-        <h2 class="h5 text-white text-uppercase mb-0">Techno India NJR Institute Of Technology</h2>
-        <p class="text-sm mb-0 text-muted">Head Of Institute</p>
+  <div class="mainflex">
+    <div class="mainflex-1">
+      <div>
+        <img src="./logo2.jpg" style="width:40%;height: 100%;padding-top:100px" alt="AICTE logo" />
       </div>
-      <!-- Small Brand information, appears on minimized sidebar--><a class="brand-small text-center" href="index.php">
-        <p class="h1 m-0">PV</p>
-      </a>
+      <div class="heading">Welcome</div>
+      <p class="p">Login to start exploring the Feedback form Program</p>
+      <div class="smallHeading">General Information</div>
+      <p class="p">1. Kindly login with your given username and password.</p>
+      <p class="p">
+        2. Do not share your credential details like password with anyone.
+      </p>
     </div>
-    <!-- Sidebar Navigation Menus--><span
-        class="text-uppercase text-gray-500 text-sm fw-bold letter-spacing-0 mx-lg-2 heading">Main</span>
-      <ul class="list-unstyled">
-        <li class="sidebar-item"><a class="sidebar-link" href="index.php">
-            <svg class="svg-icon svg-icon-sm svg-icon-heavy me-xl-2">
-              <use xlink:href="#real-estate-1"> </use>
-            </svg>Home </a></li>
-        <li class="sidebar-item"><a class="sidebar-link" href="add_department.php">
-            <svg class="svg-icon svg-icon-sm svg-icon-heavy me-xl-2">
-              <use xlink:href="#browser-window-1"> </use>
-            </svg>Department </a></li>
-        <li class="sidebar-item"><a class="sidebar-link" href="#FACULTY" data-bs-toggle="collapse">
-            <svg class="svg-icon svg-icon-sm svg-icon-heavy me-xl-2">
-              <use xlink:href="#browser-window-1"> </use>
-            </svg>Faculty </a>
-          <ul class="collapse list-unstyled " id="FACULTY">
-            <li><a class="sidebar-link" href="add_faculty.php">Add/Edit</a></li>
-            <li><a class="sidebar-link" href="send_faculty_feedback.php">Send Feedback</a></li>
-  
-          </ul>
-        </li>
-        <li class="sidebar-item"><a class="sidebar-link" href="#STUDENT" data-bs-toggle="collapse">
-            <svg class="svg-icon svg-icon-sm svg-icon-heavy me-xl-2">
-              <use xlink:href="#browser-window-1"> </use>
-            </svg>Student </a>
-          <ul class="collapse list-unstyled " id="STUDENT">
-            <li><a class="sidebar-link" href="add_Student.php">Add/Edit</a></li>
-            <li><a class="sidebar-link" href="send_student_feedback.php">Send Feedback</a></li>
-  
-          </ul>
-      </ul>
-
-  </nav>
-  <div class="page">
-    <!-- navbar-->
-    <header class="header">
-      <nav class="navbar">
-        <div class="container-fluid">
-          <div class="d-flex align-items-center justify-content-between w-100">
-            <div class="d-flex align-items-center"><a
-                class="menu-btn d-flex align-items-center justify-content-center p-2 bg-gray-900" id="toggle-btn"
-                href="#">
-                <svg class="svg-icon svg-icon-sm svg-icon-heavy text-white">
-                  <use xlink:href="#menu-1"> </use>
-                </svg></a><a class="navbar-brand ms-2" href="index.php">
-                <div class="brand-text d-none d-md-inline-block text-uppercase letter-spacing-0"><span
-                    class="text-white fw-normal text-xs">Pratikriya </span><strong
-                    class="text-primary text-sm">Vishleshan</strong></div>
-              </a></div>
-            <ul class="nav-menu mb-0 list-unstyled d-flex flex-md-row align-items-md-center">
-
-              <!-- Log out-->
-              <li class="nav-item"><a class="nav-link text-white text-sm ps-0" href="login.php" onclick="<?php unset($role);session_unset();?>" > <span
-                    class="d-none d-sm-inline-block">Logout</span>
-                  <svg class="svg-icon svg-icon-xs svg-icon-heavy">
-                    <use xlink:href="#security-1"> </use>
-                  </svg></a></li>
-            </ul>
-          </div>
-        </div>
-      </nav>
-    </header>
-    <!-- Main Body -->
-    </section>
-    <section class="py-5">
-      <div class="container-fluid">
-        <div class="row align-items-stretch gy-4">
-          <!-- Overall Report-->
-          <div class="col-lg-3">
-            <div class="card text-left  mb-0" ; style="background-color:#17a2bb; height: 200px;">
-              <div class="card-body">
-                <h2 class="fw-bold fw-normal mb-4card-title">Overall Report</h2>
-                <p class="">Here is the overall report of the Student and Faculty.</p>
-                <a href="./Overall_Reports.html" class="btn btn-primary">Check</a>
-              </div>
-            </div>
-          </div>
-
-          <!-- Semester Report-->
-          <div class="col-lg-3">
-            <div class="card text-left mb-0" ;" style="background-color:#ffc107;height: 200px;">
-              <div class="card-body">
-                <h2 class="fw-bold fw-normal mb-4card-title">Semester Report</h2>
-                <p class="">Here is the semester wise report of the Student and Faculty.</p>
-                <a href="./Semester_result_p_f.html" class="btn btn-primary">Check</a>
-              </div>
-            </div>
-          </div>
-
-          <!-- yearly Report-->
-          <div class="col-lg-3">
-            <div class="card text-left  mb-0" ; style="background-color:#17a2bb;height: 200px;">
-              <div class="card-body">
-                <h2 class="fw-bold fw-normal mb-4card-title">Yearly Report</h2>
-                <p class="">Here is the overall report of the Student and Faculty.</p>
-                <a href="./Yearly_result.html" class="btn btn-primary">Check</a>
-              </div>
-            </div>
-          </div>
-
-          <!-- Feedback Report-->
-          <div class="col-lg-3">
-            <div class="card text-left  mb-0" ;" style="background-color:#ffc107;height: 200px;">
-              <div class="card-body">
-                <h2 class="fw-bold fw-normal mb-4card-title">Feedback Report</h2>
-                <p class="">Here is the semester wise report of the Student and Faculty.</p>
-                <a href="./feedback_graph_student.php" class="btn btn-primary">Check</a>
-              </div>
-            </div>
-          </div>
-        </div>
+    <form class="mainflex-2" action="" method="post">
+      <div class="formContainer">
+        <div class="loginHeading heading">Login</div>
+        <select class="login-flex" name="role">
+          <option value="none" selected disabled hidden>Login As</option>
+          <option value="HEI">HEI</option>
+          <option value="HOD">HOD</option>
+          <option value="Faculty">Faculty</option>
+          <option value="Student">Student</option>
+        </select>
+        <input class="login-flex" type="email" id="mail" aria-describedby="emailHelp" name="email" placeholder="Enter email" />
+        <input class="login-flex" type="password" id="Pass" name="password" placeholder="Password" />
+        <button class="button" type="submit" name="submit">Login</button>
+        <div class="forgotPassword">Forgot Password</div>
       </div>
-    </section>
-    <!-- Header Section-->
+    </form>
   </div>
-  <!-- JavaScript files-->
-  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="vendor/chart.js/Chart.min.js"></script>
-  <script src="vendor/just-validate/js/just-validate.min.js"></script>
-  <script src="vendor/choices.js/public/assets/scripts/choices.min.js"></script>
-  <script src="vendor/overlayscrollbars/js/OverlayScrollbars.min.js"></script>
-  <script src="js/charts-home.js"></script>
-  <!-- Main File-->
-  <script src="js/front.js"></script>
-  <script>
-    // ------------------------------------------------------- //
-    //   Inject SVG Sprite - 
-    // ------------------------------------------------------ //
-    function injectSvgSprite(path) {
-
-      var ajax = new XMLHttpRequest();
-      ajax.open("GET", path, true);
-      ajax.send();
-      ajax.onload = function (e) {
-        var div = document.createElement("div");
-        div.className = 'd-none';
-        div.innerHTML = ajax.responseText;
-        document.body.insertBefore(div, document.body.childNodes[0]);
-      }
-    }
-    // this is set to BootstrapTemple website as you cannot 
-    // inject local SVG sprite (using only 'icons/orion-svg-sprite.svg' path)
-    // while using file:// protocol
-    // pls don't forget to change to your domain :)
-    injectSvgSprite('https://bootstraptemple.com/files/icons/orion-svg-sprite.svg');
-
-
-  </script>
-  <!-- FontAwesome CSS - loading as last, so it doesn't block rendering-->
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css"
-    integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 </body>
 
 </html>
-<?php
-}
-else{
-  header("Location: ./login.php");
-}
-?>
